@@ -1,5 +1,4 @@
 require 'httparty'
-require 'zip'
 
 url = 'https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest'
 response = HTTParty.get(url)
@@ -10,11 +9,9 @@ response['assets'].each do |a|
     puts "Found latest version: #{a['name']}"
     puts "Downloading file."
     File.open(a['name'], "wb") do |f| 
-      f.write HTTParty.get(url).body
+      f.write HTTParty.get(a['browser_download_url']).parsed_response
     end
+    puts "Download complete. Opening file... Enjoy!"
+    system %{cmd /c "start #{a['name']}"}
   end
 end
-
-
-# File.open(yourfile, 'w') { |file| file.write("your text") }
-# href="/yuzu-emu/yuzu-mainline/releases/download/mainline-0-1176/yuzu-windows-msvc-20220922-525d31615.zip"
